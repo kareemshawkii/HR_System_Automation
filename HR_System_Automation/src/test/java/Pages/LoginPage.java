@@ -11,6 +11,7 @@ public class LoginPage {
     private By passwordField = By.id("password");
     private By loginButton = By.id("login-button");
     private By errorMessage = By.cssSelector("h3[data-test='error']");
+    private By showPasswordButton = By.id("show-password-btn");
 
     // Constructor
     public LoginPage(WebDriver driver) {
@@ -18,7 +19,7 @@ public class LoginPage {
     }
 
     // Actions
-    public void enterUsername(String username) {
+    public void enterEmail(String username) {
         driver.findElement(usernameField).clear();
         driver.findElement(usernameField).sendKeys(username);
     }
@@ -36,9 +37,25 @@ public class LoginPage {
         return driver.findElement(errorMessage).getText();
     }
 
-    public void login(String username, String password) {
-        enterUsername(username);
-        enterPassword(password);
-        clickLogin();
+    public boolean isPasswordMasked() {
+        String type = driver.findElement(passwordField).getAttribute("type");
+        return type.equals("password");
+    }
+
+    public void clickShowPassword() {
+        driver.findElement(showPasswordButton).click();
+    }
+
+    public boolean isPasswordVisible() {
+        return driver.findElement(passwordField).getAttribute("type").equals("text");
+    }
+
+
+    public boolean isErrorDisplayed() {
+        return driver.findElements(errorMessage).size() > 0;
+    }
+
+    public boolean isLoginSuccessful() {
+        return driver.getCurrentUrl().contains("");
     }
 }

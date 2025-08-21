@@ -1,21 +1,18 @@
 package Base;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import org.testng.annotations.*;
-
+import org.openqa.selenium.devtools.v129.network.Network;
 import java.time.Duration;
+import java.util.Optional;
+import org.openqa.selenium.devtools.v129.network.model.ConnectionType;
+
 
 public class BaseTest {
     protected WebDriver driver;
-    private WebDriverWait wait;
+    protected DevTools devTools;
 
     @BeforeMethod
     public void setUp() {
@@ -31,5 +28,24 @@ public class BaseTest {
         if (driver != null) {
             driver.quit();
         }
+    }
+
+    protected void setNetworkOffline(boolean offline) {
+        devTools.send(Network.enable(
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
+        ));
+
+        devTools.send(Network.emulateNetworkConditions(
+                offline,                         // offline or not
+                100,                             // latency in ms
+                0,                               // download throughput
+                0,                               // upload throughput
+                Optional.of(ConnectionType.CELLULAR3G), // connection type
+                Optional.empty(),                 // maxTotalBufferSize
+                Optional.empty(),                 // maxResourceBufferSize
+                Optional.empty()                  // throughputKbps
+        ));
     }
 }
