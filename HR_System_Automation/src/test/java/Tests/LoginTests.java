@@ -2,10 +2,15 @@ package Tests;
 
 import Base.BaseTest;
 import Pages.LoginPage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.time.Duration;
 
 public class LoginTests extends BaseTest {
 
@@ -241,6 +246,10 @@ public class LoginTests extends BaseTest {
     public void SCRUM_50_testLoginWithoutInternet() {
         LoginPage loginPage = new LoginPage(driver);
 
+        //step0
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("email-field")));
+
         // 1. Shut the network down
         setNetworkOffline(true);
 
@@ -258,14 +267,15 @@ public class LoginTests extends BaseTest {
         Assert.assertEquals(error, "close\n" +
                 "notifications\n" +
                 "Cannot reach to the central server");
-
-        // Restore internet for following tests
-        setNetworkOffline(false);
     }
 
     @Test
     public void SCRUM_54_testLoginAndThenShutDownInternet() {
         LoginPage loginPage = new LoginPage(driver);
+
+        //step0
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("email-field")));
 
         // 1. Enter email
         loginPage.enterEmail("admin@innovitics.com");
@@ -286,8 +296,5 @@ public class LoginTests extends BaseTest {
                         driver.getPageSource().toLowerCase().contains("no connection"),
                 "Session did not end after shutting down internet."
         );
-
-        // Restore internet for following tests
-        setNetworkOffline(false);
     }
 }

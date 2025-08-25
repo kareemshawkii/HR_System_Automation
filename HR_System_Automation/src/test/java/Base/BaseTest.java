@@ -24,12 +24,27 @@ public class BaseTest {
         driver.get("https://tvadmin.taqavolt.com");
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
-        if (devTools != null) {
-            // Disable the network domain and close the DevTools session
-            devTools.send(Network.disable());
-            devTools.close();
+        try {
+            Process process = Runtime.getRuntime().exec("netsh interface show interface name=\"WiFi\"");
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream())
+            );
+            String line;
+            boolean isOffline = false;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Disabled")) {
+                    isOffline = true;
+                    break;
+                }
+            }
+
+            if (isOffline) {
+                setNetworkOffline(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         if (driver != null) {
             driver.quit();
@@ -37,7 +52,7 @@ public class BaseTest {
     }
 
     protected void setNetworkOffline(boolean offline) {
-        String adapterName = "WiFi"; // الاسم الصحيح من netsh interface show interface
+        String adapterName = "WiFi";
         String command = offline
                 ? "netsh interface set interface \"" + adapterName + "\" admin=disable"
                 : "netsh interface set interface \"" + adapterName + "\" admin=enable";
