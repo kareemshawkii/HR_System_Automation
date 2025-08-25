@@ -255,7 +255,9 @@ public class LoginTests extends BaseTest {
 
         // 5. Verify error message
         String error = loginPage.getErrorMessage();
-        Assert.assertEquals(error, "no connection");
+        Assert.assertEquals(error, "close\n" +
+                "notifications\n" +
+                "Cannot reach to the central server");
 
         // Restore internet for following tests
         setNetworkOffline(false);

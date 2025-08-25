@@ -17,7 +17,12 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.27.0</version>
+            <version>4.22.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-devtools-v126</artifactId>
+            <version>4.22.0</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -35,6 +40,12 @@
             <artifactId>allure-maven</artifactId>
             <version>2.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
     </dependencies>
 
 </project>

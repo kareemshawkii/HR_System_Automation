@@ -7,10 +7,10 @@ public class LoginPage {
     private WebDriver driver;
 
     // Locators
-    private By usernameField = By.id("user-name");
-    private By passwordField = By.id("password");
-    private By loginButton = By.id("login-button");
-    private By errorMessage = By.cssSelector("h3[data-test='error']");
+    private By usernameField = By.id("email-field");
+    private By passwordField = By.id("password-field");
+    private By loginButton = By.id("sign-in-button");
+    private By errorMessage = By.xpath("//div[@data-notify='container' and @data-notify-position='top-right']");
     private By showPasswordButton = By.id("show-password-btn");
 
     // Constructor
@@ -49,7 +49,6 @@ public class LoginPage {
     public boolean isPasswordVisible() {
         return driver.findElement(passwordField).getAttribute("type").equals("text");
     }
-
 
     public boolean isErrorDisplayed() {
         return driver.findElements(errorMessage).size() > 0;
