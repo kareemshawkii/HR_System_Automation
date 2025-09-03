@@ -4,14 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage {
-    private WebDriver driver;
+    private final WebDriver driver;
 
     // Locators
-    private By usernameField = By.id("email-field");
-    private By passwordField = By.id("password-field");
-    private By loginButton = By.id("sign-in-button");
-    private By errorMessage = By.xpath("//div[@data-notify='container' and @data-notify-position='top-right']");
-    private By showPasswordButton = By.id("show-password-btn");
+    private final By usernameField = By.id("email-field");
+    private final By passwordField = By.id("password-field");
+    private final By loginButton = By.id("sign-in-button");
+    private final By errorMessage = By.xpath("//div[@data-notify='container' and @data-notify-position='top-right']");
+    private final By showPasswordButton = By.id("show-password-btn");
 
     // Constructor
     public LoginPage(WebDriver driver) {
@@ -51,7 +51,7 @@ public class LoginPage {
     }
 
     public boolean isErrorDisplayed() {
-        return driver.findElements(errorMessage).size() > 0;
+        return !driver.findElements(errorMessage).isEmpty();
     }
 
     public boolean isLoginSuccessful() {
