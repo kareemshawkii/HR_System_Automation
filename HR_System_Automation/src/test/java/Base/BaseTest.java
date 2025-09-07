@@ -2,22 +2,18 @@ package Base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.annotations.*;
-import org.openqa.selenium.devtools.v126.network.Network;
 import java.time.Duration;
-import java.util.Optional;
-import org.openqa.selenium.devtools.v126.network.model.ConnectionType;
+
 
 
 public class BaseTest {
     protected WebDriver driver;
-    protected DevTools devTools;
 
     @BeforeMethod
     public void setUp() {
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\kimok\\Downloads\\edgedriver_win64\\msedgedriver.exe");
+        System.setProperty("webdriver.edge.driver", "C:\\Users\\kimok\\OneDrive\\Documents\\GitHub\\HR_System_Automation\\HR_System_Automation\\edgedriver_win64\\msedgedriver.exe");
         driver = new EdgeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(100));

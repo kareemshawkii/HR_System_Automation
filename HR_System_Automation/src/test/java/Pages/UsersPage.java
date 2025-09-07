@@ -22,6 +22,7 @@ public class UsersPage {
     private final By searchBar = By.cssSelector("input[type='search']");
     private final By usersTableRows = By.cssSelector("table tbody tr");
     private final By noResultsMessage = By.xpath("//*[contains(text(),'No results found')]");
+    private final By editIcon = By.cssSelector(".edit-icon");
 
     public UsersPage(WebDriver driver) {
         this.driver = driver;
@@ -81,5 +82,9 @@ public class UsersPage {
 
     public boolean isNoResultsDisplayed() {
         return driver.findElement(noResultsMessage).isDisplayed();
+    }
+
+    public void clickEditUser() {
+        driver.findElement(editIcon).click();
     }
 }
