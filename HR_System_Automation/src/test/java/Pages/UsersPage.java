@@ -23,6 +23,7 @@ public class UsersPage {
     private final By usersTableRows = By.cssSelector("table tbody tr");
     private final By noResultsMessage = By.xpath("//*[contains(text(),'No results found')]");
     private final By editIcon = By.cssSelector(".edit-icon");
+    private final By deleteIcon = By.cssSelector(".edit-icon");
 
     public UsersPage(WebDriver driver) {
         this.driver = driver;
@@ -86,5 +87,9 @@ public class UsersPage {
 
     public void clickEditUser() {
         driver.findElement(editIcon).click();
+    }
+
+    public void clickDeleteUser() {
+        driver.findElement(deleteIcon).click();
     }
 }

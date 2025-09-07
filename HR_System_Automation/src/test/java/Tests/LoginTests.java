@@ -264,9 +264,10 @@ public class LoginTests extends BaseTest {
 
         // 5. Verify error message
         String error = loginPage.getErrorMessage();
-        Assert.assertEquals(error, "close\n" +
-                "notifications\n" +
-                "Cannot reach to the central server");
+        Assert.assertEquals(error, """
+                close
+                notifications
+                Cannot reach to the central server""");
     }
 
     @Test

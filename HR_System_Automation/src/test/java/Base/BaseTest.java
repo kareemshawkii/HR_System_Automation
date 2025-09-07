@@ -1,7 +1,6 @@
 package Base;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.annotations.*;
 import java.time.Duration;

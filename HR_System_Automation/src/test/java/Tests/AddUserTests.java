@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class AddUserTests extends BaseTest {
 
-    private AddUserPage addUserPage;
+    private final AddUserPage addUserPage = new AddUserPage(driver);
 
     @BeforeMethod
     public void navigateToAddUserPage() {
