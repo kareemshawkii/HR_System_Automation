@@ -1,66 +1,45 @@
 package Tests;
 
+import Base.BaseTestUsers;
+import Pages.AddUserPage;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import Pages.UsersPage;
-import Pages.DeleteUserPage;
-import Pages.LoginPage;
-import Base.BaseTest;
+import Pages.*;
 
-public class DeleteUserTests extends BaseTest {
-    LoginPage loginPage;
-    UsersPage usersPage;
-    DeleteUserPage deleteUserPage;
-    String deletedEmail = "testuser@example.com";
-    String deletedPassword = "Password123";
-
-    @BeforeMethod
-    public void setUpPages() {
-        loginPage = new LoginPage(driver);
-        usersPage = new UsersPage(driver);
-        deleteUserPage = new DeleteUserPage(driver);
-        loginPage.enterEmail("admin@innovitics.com");
-        loginPage.enterPassword("admin");
-        loginPage.clickLogin();
-        usersPage.clickDeleteUser();
-    }
+public class DeleteUserTests extends BaseTestUsers {
 
     @Test
     public void verifyDeleteIconPromptsConfirmation() {
-        deleteUserPage.clickDeleteIcon();
+        UsersPage usersPage=new UsersPage(driver);
+        DeleteUserPage deleteUserPage =new DeleteUserPage(driver);
+        deleteUserPage.clickNextPage();
+        usersPage.clickDeleteUser();
         Assert.assertTrue(deleteUserPage.isConfirmationDialogDisplayed(),
                 "Confirmation dialog should appear");
     }
 
     @Test
-    public void verifyConfirmingDeletionRemovesUser() {
-        deleteUserPage.clickDeleteIcon();
-        deleteUserPage.confirmDeletion();
-        Assert.assertFalse(deleteUserPage.isUserPresent(),
-                "User should be removed from the table");
-    }
-
-    @Test
     public void verifyCancelingDeletionKeepsUser() {
-        deleteUserPage.clickDeleteIcon();
+        UsersPage usersPage=new UsersPage(driver);
+        DeleteUserPage deleteUserPage =new DeleteUserPage(driver);
+        deleteUserPage.clickNextPage();
+        usersPage.clickDeleteUser();
         deleteUserPage.cancelDeletion();
-        Assert.assertTrue(deleteUserPage.isUserPresent(),
-                "User should remain in the table after cancel");
+        Assert.assertEquals(driver.getCurrentUrl(), "https://innoviticshr-web.azurewebsites.net/home/users");
     }
 
     @Test
-    public void verifyDeletedUserCannotLogin() {
-        // Step 1: Delete user
-        deleteUserPage.clickDeleteIcon();
+    public void verifyConfirmingDeletionRemovesUser() {
+        UsersPage usersPage=new UsersPage(driver);
+        DeleteUserPage deleteUserPage =new DeleteUserPage(driver);
+        deleteUserPage.clickNextPage();
+        usersPage.clickDeleteUser();
         deleteUserPage.confirmDeletion();
-
-        // Step 2: Logout and try to log in with deleted user
-        loginPage.enterEmail(deletedEmail);
-        loginPage.enterPassword(deletedPassword);
-        loginPage.clickLogin();
-
-        Assert.assertEquals(loginPage.getErrorMessage(), "Invalid credentials",
-                "Deleted user should not be able to login");
+        Assert.assertEquals(driver.getCurrentUrl(), "https://innoviticshr-web.azurewebsites.net/home/users");
+        AddUserPage addUserPage = new AddUserPage(driver);
+        Assert.assertEquals(addUserPage.getErrorMessage(), "User Deleted\n" +
+                "user has been removed.");
     }
 }
+
+

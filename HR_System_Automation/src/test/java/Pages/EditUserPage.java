@@ -6,25 +6,24 @@ import org.openqa.selenium.WebDriver;
 public class EditUserPage {
     WebDriver driver;
 
-    // Locators
     private final By fullName = By.id("fullName");
     private final By email = By.id("email");
     private final By password = By.id("password");
     private final By department = By.id("department");
     private final By level = By.id("level");
-    private final By photoUpload = By.id("photoUpload");
-    private final By saveBtn = By.id("saveChanges");
-    private final By cancelBtn = By.id("cancelBtn");
-    private final By successPopup = By.id("successPopup");
-    private final By errorPopup = By.id("errorPopup");
+    private final By photoUpload = By.xpath("//label[@class='edit-icon' and .//img[@alt='Edit']]");
+    private final By saveBtn = By.xpath("//button[@type='submit' and .//span[normalize-space()='Save Changes']]");
+    private final By cancelBtn = By.xpath("//button[@class='ant-btn cancelButton' and .//span[normalize-space()='cancel']]");
+    private final By errorPopup = By.xpath("//div[contains(@class, 'ant-notification-notice')]");
+    private final By goToUserPageButton = By.cssSelector("button.goToUsers");
 
     public EditUserPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    // Actions
-    public void setFullName(String name) {
+    public void setFullName(String name) throws InterruptedException {
         driver.findElement(fullName).clear();
+        Thread.sleep(1000);
         driver.findElement(fullName).sendKeys(name);
     }
 
@@ -32,8 +31,9 @@ public class EditUserPage {
         return driver.findElement(fullName).getAttribute("value");
     }
 
-    public void setEmail(String mail) {
+    public void setEmail(String mail) throws InterruptedException {
         driver.findElement(email).clear();
+        Thread.sleep(1000);
         driver.findElement(email).sendKeys(mail);
     }
 
@@ -41,8 +41,9 @@ public class EditUserPage {
       return driver.findElement(email).getAttribute("value");
     }
 
-    public void setPassword(String pwd) {
+    public void setPassword(String pwd) throws InterruptedException {
         driver.findElement(password).clear();
+        Thread.sleep(1000);
         driver.findElement(password).sendKeys(pwd);
     }
 
@@ -66,11 +67,11 @@ public class EditUserPage {
         driver.findElement(cancelBtn).click();
     }
 
-    public String getSuccessMessage() {
-        return driver.findElement(successPopup).getText();
-    }
-
     public String getErrorMessage() {
         return driver.findElement(errorPopup).getText();
+    }
+
+    public void clickGoToUserPageButton() {
+        driver.findElement(goToUserPageButton).click();
     }
 }

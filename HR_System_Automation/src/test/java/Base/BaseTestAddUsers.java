@@ -1,0 +1,86 @@
+package Base;
+
+import Pages.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.testng.annotations.*;
+import java.time.Duration;
+
+public class BaseTestAddUsers {
+    protected WebDriver driver;
+    LoginPage loginPage;
+
+    @BeforeMethod
+    public void setUp() throws InterruptedException {
+        System.setProperty("webdriver.edge.driver", "C:\\Users\\kimok\\OneDrive\\Documents\\GitHub\\HR_System_Automation\\HR_System_Automation\\edgedriver_win64\\msedgedriver.exe");
+        driver = new EdgeDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.get("https://innoviticshr-web.azurewebsites.net");
+        loginPage = new LoginPage(driver);
+        loginPage.enterEmail("admin@innovitics.com");
+        loginPage.enterPassword("admin");
+        loginPage.clickLogin();
+        Thread.sleep(1000);
+        driver.findElement(By.cssSelector("svg[data-icon=\"close\"][aria-hidden=\"true\"]")).click();
+        Thread.sleep(500);
+        UsersPage usersPage = new UsersPage(driver);
+        usersPage.clickAddUserButton();
+    }
+
+
+    @AfterMethod(alwaysRun = true)
+    public void tearDown() {
+        try {
+            Process process = Runtime.getRuntime().exec("netsh interface show interface name=\"WiFi\"");
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream())
+            );
+            String line;
+            boolean isOffline = false;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Disabled")) {
+                    isOffline = true;
+                    break;
+                }
+            }
+            if (isOffline) {
+                setNetworkOffline(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    protected void setNetworkOffline(boolean offline) {
+        String adapterName = "WiFi";
+        String command = offline
+                ? "netsh interface set interface \"" + adapterName + "\" admin=disable"
+                : "netsh interface set interface \"" + adapterName + "\" admin=enable";
+        try {
+            Process process = new ProcessBuilder("cmd.exe", "/c", command)
+                    .redirectErrorStream(true)
+                    .start();
+            try (java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("✅ Network interface \"" + adapterName + "\" set to " + (offline ? "OFFLINE" : "ONLINE"));
+            } else {
+                System.out.println("❌ Failed to change network state. Exit code: " + exitCode);
+            }
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

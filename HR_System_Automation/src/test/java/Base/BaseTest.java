@@ -5,8 +5,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.testng.annotations.*;
 import java.time.Duration;
 
-
-
 public class BaseTest {
     protected WebDriver driver;
 
@@ -16,7 +14,7 @@ public class BaseTest {
         driver = new EdgeDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(100));
-        driver.get("https://tvadmin.taqavolt.com");
+        driver.get("https://innoviticshr-web.azurewebsites.net");
     }
 
     @AfterMethod(alwaysRun = true)
@@ -34,7 +32,6 @@ public class BaseTest {
                     break;
                 }
             }
-
             if (isOffline) {
                 setNetworkOffline(false);
             }
@@ -68,11 +65,10 @@ public class BaseTest {
             } else {
                 System.out.println("❌ Failed to change network state. Exit code: " + exitCode);
             }
-            Thread.sleep(3000); // wait for effect
+            Thread.sleep(3000);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }
 
