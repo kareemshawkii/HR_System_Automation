@@ -2,6 +2,7 @@ package Base;
 
 import Pages.LoginPage;
 import Pages.UsersPage;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,6 +26,7 @@ public class BaseRooms {
         loginPage.enterEmail("admin@innovitics.com");
         loginPage.enterPassword("admin");
         loginPage.clickLogin();
+        driver.findElement(By.cssSelector("svg[data-icon=\"close\"][aria-hidden=\"true\"]")).click();
         usersPage = new UsersPage(driver);
         usersPage.clickRooms();
     }

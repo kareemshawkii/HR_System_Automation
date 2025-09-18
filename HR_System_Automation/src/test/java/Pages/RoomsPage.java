@@ -1,17 +1,20 @@
 package Pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
+import org.testng.Assert;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.time.Duration;
-import java.util.List;
 
 public class RoomsPage {
     protected WebDriver driver;
-
+    //View
+    private final By roomCardsContainer = By.cssSelector(".roomsContainer");
+    private final By availableButton = By.xpath("//button[normalize-space()='Available']");
+    private final By unavailableButton = By.xpath("//button[normalize-space()='Unavailable']");
+    //Add
     private final By roomNameInput = By.xpath("//input[@formcontrolname='name']");
     private final By capacityInput = By.xpath("//input[@formcontrolname='capacity']");
     private final By capacityIncreaseButton = By.xpath("//img[@alt='increment']");
@@ -20,24 +23,54 @@ public class RoomsPage {
     private final By noScreenButton = By.xpath("//button[.//img[@alt='No Screen']]");
     private final By fileInput = By.xpath("//button[@class='uploadBtn']");
     private final By addRoomButton = By.xpath("//button[.//span[normalize-space()='Add Room']]");
-    private final By roomCards = By.xpath("//div[@class='roomCard']");
-    private final By paginationDots = By.xpath("//div[@part='pagination' and contains(@class, 'swiper-pagination')]");
-    private final By successPopup = By.xpath("//img[@src='../../assets/imgs/successAddUser.svg']");
     private final By goRoomList = By.xpath("//button[@class='goToUsers' and normalize-space()='Go to Rooms List']");
-    private final By nameError = By.id("room-name-error"); // Replace with actual error element ID
-    private final By availableButton = By.xpath("//button[normalize-space()='Available']");
-    private final By unavailableButton = By.xpath("//button[normalize-space()='Unavailable']");
+    private final By errorMessage = By.xpath("//div[\ncontains(@class, 'ant-notification-notice')]");
+   //Edit
     private final By editRoomButton = By.xpath("//img[contains(@src, 'Vector (11).svg')]");
-    private final By roomName = By.xpath("//h3[@class='roomLabel' and normalize-space()='test1']");
-    private final By roomCapacity = By.xpath("//p[@class='roomCapacity']");
-    private final By screenFlag = By.xpath("//p[@class='screenAvailability' and text()='Screen']\n");
-    private final By noScreenFlag = By.xpath("//p[@class='screenAvailability' and text()='No screen']\n");
-
+    private final By cancelEdit = By.xpath("//button[@class='backButton ng-star-inserted' and .//img[@alt='Back']]");
+    private final By saveChanges = By.xpath("//span[normalize-space()='Save Changes']");
+    //Delete
+    private final By deleteRoomButton = By.xpath("//span[normalize-space()='Delete']");
+    private final By popupDelete = By.xpath("//div[@class='ant-modal-body']");
+    private final By cancelDelete = By.xpath("//button[@class='cancelDelete' and normalize-space()='Cancel']");
+    private final By confirmDelete = By.xpath("//button[@class='confirmDeleteUser' and .//span[normalize-space()='Delete']]");
 
     public RoomsPage(WebDriver driver) {
         this.driver = driver;
     }
 
+    //View
+    public boolean isRoomInCardsContainer(String name) {
+        try {
+            WebElement container = driver.findElement(roomCardsContainer);
+            WebElement room = container.findElement(By.xpath(".//*[contains(text(),'" + name + "')]"));
+            return room.isDisplayed();
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public void validateRoomDetails(String roomName, String expectedCapacity, String expectedScreenStatus) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        String roomCardXPath = String.format("//h3[contains(@class, 'roomLabel') and normalize-space()='%s']/ancestor::div[contains(@class, 'roomCard')]", roomName);
+        WebElement roomCard = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(roomCardXPath)));
+        WebElement capacityElement = roomCard.findElement(By.cssSelector("p.roomCapacity"));
+        WebElement screenElement = roomCard.findElement(By.cssSelector("p.screenAvailability"));
+        String actualCapacity = capacityElement.getText().trim();
+        String actualScreenStatus = screenElement.getText().trim();
+        Assert.assertEquals(actualCapacity, expectedCapacity, "The capacity for '" + roomName + "' is incorrect.");
+        Assert.assertEquals(actualScreenStatus, expectedScreenStatus, "The screen status for '" + roomName + "' is incorrect.");
+    }
+
+    public void clickUnavailable() {
+        driver.findElement(unavailableButton).click();
+    }
+
+    public void clickAvailable() {
+        driver.findElement(availableButton).click();
+    }
+
+    //Add
     public void enterRoomName(String name) {
         driver.findElement(roomNameInput).sendKeys(name);
     }
@@ -79,72 +112,41 @@ public class RoomsPage {
         driver.findElement(addRoomButton).click();
     }
 
-    public int getDisplayedRoomCount() {
-        return driver.findElements(roomCards).size();
-    }
-
-    public WebElement getRoomCardByName(String name) {
-        String roomCardXPath = String.format("//div[contains(@class, 'room-card-class') and .//h3[text()='%s']]", name);
-        WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(5));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(roomCardXPath)));
-    }
-
-    public String getRoomCapacityFromCard(WebElement roomCard) {
-        return roomCard.findElement(By.xpath(".//span[contains(text(), 'people')]")).getText();
-    }
-
-    public boolean doesRoomHaveScreenIcon(WebElement roomCard) {
-        return !roomCard.findElements(By.xpath(".//span[text()='Screen']")).isEmpty();
-    }
-
-    public void clickPaginationDot(int index) {
-        List<WebElement> dots = driver.findElements(paginationDots);
-        if (index > 0 && index <= dots.size()) {
-            dots.get(index - 1).click();
-        }
-    }
-
-    public void clickUnavailable() {
-        driver.findElement(unavailableButton).click();
-    }
-
-    public void clickAvailable() {
-        driver.findElement(availableButton).click();
+    public String getErrorMessage(){
+        return driver.findElement(errorMessage).getText();
     }
 
     public void clickGoRoomList() {
         driver.findElement(goRoomList).click();
     }
 
+    //Edit
     public void clickEditRoom() {
         driver.findElement(editRoomButton).click();
     }
 
-    public String getRoomName() {
-        return driver.findElement(roomName).getAttribute("value");
+    public void clickCancelEditRoom() {
+        driver.findElement(cancelEdit).click();
     }
 
-    public String getRoomCapacity() {
-        return driver.findElement(roomCapacity).getAttribute("value");
+    public void clickSaveChanges() {
+        driver.findElement(saveChanges).click();
     }
 
-    public boolean getScreenFlag() {
-        return driver.findElement(screenFlag).isDisplayed();
+    //Delete
+    public void clickDeleteRoom() {
+        driver.findElement(deleteRoomButton).click();
     }
 
-    public boolean getNoScreenFlag() {
-        return driver.findElement(noScreenFlag).isDisplayed();
+    public void clickCancelDeleteRoom() {
+        driver.findElement(cancelDelete).click();
     }
 
-    // --- Methods for Validation ---
-    public boolean isSuccessPopupDisplayed() {
-        return driver.findElement(successPopup).isDisplayed();
+    public void clickConfirmDeleteRoom() {
+        driver.findElement(confirmDelete).click();
     }
 
-    public String getNameErrorMessage() {
-        new WebDriverWait(driver, Duration.ofSeconds(5));
-        WebDriverWait wait;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(nameError)).getText();
+    public boolean isPopupDelete() {
+        return driver.findElement(popupDelete).isDisplayed();
     }
 }
