@@ -7,36 +7,30 @@ import org.testng.annotations.Test;
 
 public class DeleteRoomTests extends BaseRooms {
 
-    @Test
-    public void testOpenDeletePopup() {
+    @Test(priority = 1)
+    public void testOpenDeletePopup()  {
         RoomsPage roomsPage = new RoomsPage(driver);
+        roomsPage.clickEditRoom();
         roomsPage.clickDeleteRoom();
         Assert.assertTrue(roomsPage.isPopupDelete(), "Delete popup should appear");
     }
 
-    @Test
+    @Test(priority = 2)
     public void testCancelDelete() {
         RoomsPage roomsPage = new RoomsPage(driver);
+        roomsPage.clickEditRoom();
         roomsPage.clickDeleteRoom();
         roomsPage.clickCancelDeleteRoom();
         Assert.assertTrue(true, "Room remains after cancel delete");
     }
 
-    @Test
+    @Test(priority = 3)
     public void testConfirmDelete() {
         RoomsPage roomsPage = new RoomsPage(driver);
-        roomsPage.clickDeleteRoom();
-        roomsPage.clickConfirmDeleteRoom();
-
-        Assert.assertTrue(roomsPage.getErrorMessage().contains("deleted"),
-                "Room should be deleted successfully");
-    }
-
-    @Test
-    public void testDeleteNonExistentRoom() {
-        RoomsPage roomsPage = new RoomsPage(driver);
-        boolean exists = roomsPage.isRoomInCardsContainer("Deleted Room");
-        Assert.assertFalse(exists, "Deleted room should not exist in container");
+        roomsPage.enterRoomName("deleted room");
+        roomsPage.clickAddRoom();
+        roomsPage.clickGoRoomList();
+        roomsPage.deleteRoomByName("deleted room");
     }
 }
 

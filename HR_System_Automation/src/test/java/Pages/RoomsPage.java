@@ -22,8 +22,8 @@ public class RoomsPage {
     private final By screenButton = By.xpath("//button[normalize-space() = 'Screen']");
     private final By noScreenButton = By.xpath("//button[.//img[@alt='No Screen']]");
     private final By fileInput = By.xpath("//button[@class='uploadBtn']");
-    private final By addRoomButton = By.xpath("//button[.//span[normalize-space()='Add Room']]");
-    private final By goRoomList = By.xpath("//button[@class='goToUsers' and normalize-space()='Go to Rooms List']");
+    private final By addRoomButton = By.xpath("//button[@type='submit' and @class='ant-btn actionButton ant-btn-primary' and .//span[text()=' Add Room ']]");
+    private final By goRoomList = By.xpath("//button[@class='goToUsers ng-star-inserted' and text()='Go to Rooms List']");
     private final By errorMessage = By.xpath("//div[\ncontains(@class, 'ant-notification-notice')]");
    //Edit
     private final By editRoomButton = By.xpath("//img[contains(@src, 'Vector (11).svg')]");
@@ -31,7 +31,7 @@ public class RoomsPage {
     private final By saveChanges = By.xpath("//span[normalize-space()='Save Changes']");
     //Delete
     private final By deleteRoomButton = By.xpath("//span[normalize-space()='Delete']");
-    private final By popupDelete = By.xpath("//div[@class='ant-modal-body']");
+    private final By popupDelete = By.cssSelector(".ant-modal-content");
     private final By cancelDelete = By.xpath("//button[@class='cancelDelete' and normalize-space()='Cancel']");
     private final By confirmDelete = By.xpath("//button[@class='confirmDeleteUser' and .//span[normalize-space()='Delete']]");
 
@@ -148,5 +148,26 @@ public class RoomsPage {
 
     public boolean isPopupDelete() {
         return driver.findElement(popupDelete).isDisplayed();
+    }
+
+    public void deleteRoomByName(String roomName) {
+        try {
+            String roomCardXpath = String.format("//div[contains(@class, 'roomCard') and .//h3[normalize-space()='%s']]", roomName);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement roomCard = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(roomCardXpath)));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", roomCard);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", roomCard);
+            String editButtonXpath = String.format("//div[contains(@class, 'roomCard') and .//h3[normalize-space()='%s']]//img[contains(@src, 'Vector (11).svg')]", roomName);
+            By editButtonLocator = By.xpath(editButtonXpath);
+            driver.findElement(editButtonLocator).click();
+            WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(deleteRoomButton));
+            deleteButton.click();
+            WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(confirmDelete));
+            confirmButton.click();
+            Assert.assertEquals(driver.findElement(errorMessage).getText(), "Room Deleted Successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Failed to delete room '" + roomName + "'. Error: " + e.getMessage());
+        }
     }
 }
