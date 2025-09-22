@@ -25,7 +25,7 @@ public class DeleteRoomTests extends BaseRooms {
     }
 
     @Test(priority = 3)
-    public void testConfirmDelete() {
+    public void testConfirmDelete() throws InterruptedException {
         RoomsPage roomsPage = new RoomsPage(driver);
         roomsPage.enterRoomName("deleted room");
         roomsPage.clickAddRoom();

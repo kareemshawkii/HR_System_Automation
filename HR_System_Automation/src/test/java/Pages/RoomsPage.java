@@ -71,7 +71,9 @@ public class RoomsPage {
     }
 
     //Add
-    public void enterRoomName(String name) {
+    public void enterRoomName(String name) throws InterruptedException {
+        driver.findElement(roomNameInput).clear();
+        Thread.sleep(1000);
         driver.findElement(roomNameInput).sendKeys(name);
     }
 
@@ -165,6 +167,22 @@ public class RoomsPage {
             WebElement confirmButton = wait.until(ExpectedConditions.elementToBeClickable(confirmDelete));
             confirmButton.click();
             Assert.assertEquals(driver.findElement(errorMessage).getText(), "Room Deleted Successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail("Failed to delete room '" + roomName + "'. Error: " + e.getMessage());
+        }
+    }
+
+    public void editRoomByName(String roomName) {
+        try {
+            String roomCardXpath = String.format("//div[contains(@class, 'roomCard') and .//h3[normalize-space()='%s']]", roomName);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebElement roomCard = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(roomCardXpath)));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", roomCard);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", roomCard);
+            String editButtonXpath = String.format("//div[contains(@class, 'roomCard') and .//h3[normalize-space()='%s']]//img[contains(@src, 'Vector (11).svg')]", roomName);
+            By editButtonLocator = By.xpath(editButtonXpath);
+            driver.findElement(editButtonLocator).click();
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail("Failed to delete room '" + roomName + "'. Error: " + e.getMessage());

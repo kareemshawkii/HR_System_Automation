@@ -8,55 +8,52 @@ import org.testng.annotations.Test;
 public class EditRoomTests extends BaseRooms {
 
     @Test
-    public void testEditRoomName() {
+    public void testEditRoomName() throws InterruptedException {
         RoomsPage roomsPage = new RoomsPage(driver);
-        roomsPage.clickEditRoom();
+        roomsPage.editRoomByName("Room_Special");
         roomsPage.enterRoomName("Edited Room");
         roomsPage.clickSaveChanges();
-        Assert.assertTrue(roomsPage.getErrorMessage().contains("success"),
-                "Room name should be updated");
+        roomsPage.clickGoRoomList();
+        Assert.assertEquals(driver.getCurrentUrl(), "https://innoviticshr-web.azurewebsites.net/home/rooms");
     }
 
     @Test
     public void testEditRoomCapacity() {
         RoomsPage roomsPage = new RoomsPage(driver);
-        roomsPage.clickEditRoom();
+        roomsPage.editRoomByName("Edited Room");
         roomsPage.clickIncreaseCapacity();
         roomsPage.clickSaveChanges();
-
-        Assert.assertTrue(roomsPage.getErrorMessage().contains("success"),
-                "Room capacity should be updated");
+        roomsPage.clickGoRoomList();
+        Assert.assertEquals(driver.getCurrentUrl(), "https://innoviticshr-web.azurewebsites.net/home/rooms");
     }
 
     @Test
     public void testEditRoomScreenFlag() {
         RoomsPage roomsPage = new RoomsPage(driver);
-        roomsPage.clickEditRoom();
-        roomsPage.selectScreen(false);
+        roomsPage.editRoomByName("Edited Room");
+        roomsPage.selectScreen(true);
         roomsPage.clickSaveChanges();
-
-        Assert.assertTrue(roomsPage.getErrorMessage().contains("success"),
-                "Room screen flag should be updated");
+        roomsPage.clickGoRoomList();
+        Assert.assertEquals(driver.getCurrentUrl(), "https://innoviticshr-web.azurewebsites.net/home/rooms");
     }
 
     @Test
-    public void testCancelEdit() {
+    public void testCancelEdit() throws InterruptedException {
         RoomsPage roomsPage = new RoomsPage(driver);
         roomsPage.clickEditRoom();
         roomsPage.enterRoomName("Temp Name");
         roomsPage.clickCancelEditRoom();
-        Assert.assertTrue(true, "Changes discarded after cancel");
+        Assert.assertEquals(driver.getCurrentUrl(), "https://innoviticshr-web.azurewebsites.net/home/rooms");
     }
 
     @Test
-    public void testEditWithInvalidValues() {
+    public void testEditWithInvalidValues() throws InterruptedException {
         RoomsPage roomsPage = new RoomsPage(driver);
         roomsPage.clickEditRoom();
         roomsPage.enterRoomName("");
         roomsPage.clickSaveChanges();
-
-        Assert.assertTrue(roomsPage.getErrorMessage().contains("Name"),
-                "Error for empty name should appear");
+        Assert.assertEquals(roomsPage.getErrorMessage(), "Missing Information\n" +
+                "Please enter a room name");
     }
 }
 

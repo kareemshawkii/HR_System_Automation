@@ -56,8 +56,9 @@ public class AddUserTests extends BaseTestAddUsers {
     }
 
     @Test(priority = 1, description = "Verify adding new users successfully without a photo.", dataProvider = "validUserDataProvider")
-    public void verifyAddUserSuccessfullyWithoutPhoto(String name, String password, String email, String department, String level)  {
+    public void verifyAddUserSuccessfullyWithoutPhoto(String name, String password, String email, String department, String level) throws InterruptedException {
         AddUserPage addUserPage = new AddUserPage(driver);
+        Thread.sleep(2000);
         addUserPage.selectDepartment(department);
         addUserPage.selectLevel(level);
         addUserPage.enterName(name);

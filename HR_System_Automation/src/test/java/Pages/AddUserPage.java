@@ -1,6 +1,7 @@
 package Pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.*;
@@ -41,19 +42,23 @@ public class AddUserPage {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement titleInput = wait.until(ExpectedConditions.elementToBeClickable(By.id("title")));
         titleInput.click();
-        By dropdownLocator = By.xpath("//ul[contains(@class,'autocomplete-dropdown')]");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(dropdownLocator));
-        By optionLocator = By.xpath("//ul[contains(@class,'autocomplete-dropdown')]//li[normalize-space()='" + department + "']");
+        By optionsContainer = By.cssSelector("cdk-virtual-scroll-viewport");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(optionsContainer));
+        By optionLocator = By.xpath("//nz-option-item[@title='" + department + "']");
         WebElement option = wait.until(ExpectedConditions.elementToBeClickable(optionLocator));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", option);
         option.click();
     }
 
-    public void selectLevel(String level)  {
+    public void selectLevel(String level) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        WebElement levelInput = wait.until(ExpectedConditions.elementToBeClickable(levelDropdown));
-        levelInput.click();
-        By levelOptionLocator = By.xpath("//ul[contains(@class,'autocomplete-dropdown')]//li[normalize-space()='" + level + "']");
-        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(levelOptionLocator));
+        WebElement titleInput = wait.until(ExpectedConditions.elementToBeClickable(levelDropdown));
+        titleInput.click();
+        By optionsContainer = By.cssSelector("cdk-virtual-scroll-viewport");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(optionsContainer));
+        By optionLocator = By.xpath("//nz-option-item[@title='" + level + "']");
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(optionLocator));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", option);
         option.click();
     }
 
